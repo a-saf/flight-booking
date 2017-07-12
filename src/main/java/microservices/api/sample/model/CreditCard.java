@@ -13,24 +13,24 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package microservices.api.sample.model;
+package jaxrs.model;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.oas.annotations.media.Schema;
 public class CreditCard {
 
-	@ApiModelProperty(required=true, example="VISA")
+	@Schema(required = true, example="VISA")
 	private String issuer;
 
-	@ApiModelProperty(required=true, example="Joe Smith")
+	@Schema(required = true, example="Joe Smith")
 	private String cardholderName;
 	
-	@ApiModelProperty(required=true, example="**********1234")
+	@Schema(required = true, example="**********1234")
 	private String cardNumber;
 	
-	@ApiModelProperty(required=true, example="0322")
+	@Schema(required = true, example="0322")
 	private String cvv;
 	
-	@ApiModelProperty(required=true, example="04/19")
+	@Schema(required = true, example="04/19")
 	private String expiryDate;
 
 

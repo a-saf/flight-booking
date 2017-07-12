@@ -13,65 +13,40 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package microservices.api.sample.model;
+package jaxrs.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import io.swagger.annotations.ApiModelProperty;
-
-@JsonInclude(Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
+import io.swagger.oas.annotations.media.Schema;
 public class Booking {
 
 
-	@ApiModelProperty(required=true)
-	private Flight departureFlight;
+	@Schema(required = true)
+	private Flight departtureFlight;
 	
-	@ApiModelProperty(required=true)
+	@Schema(required = true)
 	private Flight returningFlight;
 
-	@ApiModelProperty(required=true)
+	@Schema(required = true)
 	private CreditCard creditCard;
 	
-	@ApiModelProperty(required=true, example="32126319")
+	@Schema(required = true, example = "32126319")
 	private String airMiles;
 	
-	@ApiModelProperty(required=true, example="window")
+	@Schema(required = true, example = "window")
 	private String seatPreference;
 	
-	@ApiModelProperty(hidden=true, required=false)
-	private String _id;
 
 	private Booking(){
 	}
 
 
 
-	public Flight getDepartureFlight() {
-		return departureFlight;
+	public Flight getDeparttureFlight() {
+		return departtureFlight;
 	}
 
-
-
-	public void setDepartureFlight(Flight departureFlight) {
-		this.departureFlight = departureFlight;
+	public void setDeparttureFlight(Flight departtureFlight) {
+		this.departtureFlight = departtureFlight;
 	}
-
-
-	@JsonProperty("_id")
-	public String getId() {
-		return _id;
-	}
-
-
-	@JsonProperty("_id")
-	public void setId(String _id) {
-		this._id = _id;
-	}
-
 
 	public Flight getReturningFlight() {
 		return returningFlight;

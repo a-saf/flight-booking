@@ -13,34 +13,33 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package microservices.api.sample.model;
+package jaxrs.model;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.oas.annotations.media.Schema;
 public class Flight {
 
-	@ApiModelProperty(required=true)
+	@Schema(required = true)
 	private Airline airline;
 
-	@ApiModelProperty(required=true, dataType="dateTime", example="2016-03-05 18:00")
+	@Schema(required = true, pattern = "dateTime", example = "2016-03-05 18:00")
 	private String dateTime;
 	
-	@ApiModelProperty(required=true, example="AC190")
+	@Schema(required = true, example = "AC190")
 	private String number;
 	
-	@ApiModelProperty(required=true, example="On Schedule")
+	@Schema(required = true, example = "On Schedule")
 	private String status;
 	
-	@ApiModelProperty(required=true, example="YYZ")
+	@Schema(required = true, example = "YYZ")
 	private String airportFrom;
 	
-	@ApiModelProperty(required=true, example="LAX")
+	@Schema(required = true, example = "LAX")
 	private String airportTo;
 	
-	@ApiModelProperty(required=true, example="US$350")
+	@Schema(required = true, example = "US$350")
 	private String price;
-	
-	public Flight() {
-		
+
+	private Flight(){
 	}
 	
 	public Flight(Airline airline, String dateTime, String number, String status, String airportFrom, String airportTo, String price) {
@@ -108,5 +107,6 @@ public class Flight {
 	public void setNumber(String number) {
 		this.number = number;
 	}
-
+	
+	
 }

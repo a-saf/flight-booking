@@ -13,22 +13,18 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package microservices.api.sample.model;
+package jaxrs.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import io.swagger.annotations.ApiModelProperty;
-
-@JsonIgnoreProperties(ignoreUnknown = true)
+import io.swagger.oas.annotations.media.Schema;
 public class Airline {
 
-	@ApiModelProperty(required=true, example="Acme Air")
+	@Schema(required = true, example = "Acme Air")
 	private String name;
 
-	@ApiModelProperty(required=true, example="1-888-1234-567")
+	@Schema(required = true, example = "1-888-1234-567")
 	private String contactPhone;
-
-	public Airline() {
+	
+	private Airline(){
 	}
 	
 	public Airline(String name,String contactPhone){

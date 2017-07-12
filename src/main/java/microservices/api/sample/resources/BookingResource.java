@@ -13,7 +13,16 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package microservices.api.sample.resources;
+package jaxrs.resources;
+
+
+import io.swagger.oas.annotations.Operation;
+import io.swagger.oas.annotations.media.Schema;
+import io.swagger.oas.annotations.media.Content;
+import io.swagger.oas.annotations.responses.ApiResponse;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -24,67 +33,130 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import microservices.api.sample.Controller;
-import microservices.api.sample.model.Booking;
+
+import jaxrs.model.Booking;
 
 @Path("/bookings")
-@Api("Airline Booking API")
-	public class BookingResource {
+@Schema(description = "Airline Booking API")
 
+	public class BookingResource {
+	private Map<Integer, Booking> bookings = new ConcurrentHashMap<Integer, Booking>();
+	private volatile int currentId = 0;
+	
 	@GET
-	@ApiOperation(value="Retrieve all bookings for current user", 
-		responseContainer="array", response=Booking.class)
+	@Operation(
+			description = "Retrieve all bookings for current user",
+			responses = {
+					@ApiResponse(
+							responseCode = "200",
+							content = @Content(
+									schema = @Schema(type = "array", implementation = Booking.class)
+							)
+					)	
+			}
+	)
 	@Produces("application/json")
 	public Response getBookings(){
-		return Controller.getBookings();
+		return Response.ok().entity(bookings.values()).build();
 	}
 	
 	@POST
-	@ApiOperation("Create a booking")
+	@Operation(description = "Create a booking")
 	@Consumes("application/json")
 	@Produces("application/json")
-	@ApiResponses({
-		@ApiResponse(code = 201, message= "Booking created", response=String.class)})
+	@ApiResponse(
+			responseCode = "201", 
+			description = "Booking created", 
+			content = @Content(
+						mediaType = "application/json",
+						schema = @Schema(implementation = String.class)))
 	public Response createBooking(Booking task){
-		return Controller.createBooking(task);
+		bookings.put(currentId, task);
+		return Response.status(Status.CREATED).entity("{\"id\":" + currentId++ + "}").build();	
 	}
 	
 	@GET
 	@Path("{id}")
-	@ApiOperation(value="Get a booking with ID")
 	@Produces("application/json")
-	@ApiResponses({
-		@ApiResponse(code = 200, message= "Booking retrieved", response=Booking.class),
-		@ApiResponse(code = 404, message = "Booking not found")})
-	public Response getBooking(@PathParam("id") String id){
-		return Controller.getBooking(id);
+	@Operation(
+			description = "Get a booking with ID",
+			responses = {
+					@ApiResponse(
+							responseCode = "200", 
+							description = "Booking retrieved", 
+							content = @Content(
+											mediaType = "application/json",
+											schema = @Schema(implementation = Booking.class)
+											)
+							),
+					@ApiResponse(
+							responseCode = "404", 
+							description = "Booking not found"
+							)
+					}
+			)
+	public Response getBooking(@PathParam("id") int id){
+		Booking booking = bookings.get(id);
+		if(booking!=null){
+			return Response.ok().entity(booking).build();	
+		}
+		else{
+			return Response.status(Status.NOT_FOUND).build();	
+		}
 	}
 	
 	@PUT
 	@Path("{id}")
-	@ApiOperation(value="Update a booking with ID")
 	@Consumes("application/json")
 	@Produces("text/plain")
-	@ApiResponses({
-		@ApiResponse(code = 200, message= "Booking updated"),
-		@ApiResponse(code = 404, message = "Booking not found")})
-	public Response updateBooking(@PathParam("id") String id, Booking booking){
-		return Controller.updateBooking(id, booking);
+	@Operation(
+			description = "Update a booking with ID",
+			responses = {
+					@ApiResponse(
+							responseCode = "200", 
+							description = "Booking updated"
+							),
+					@ApiResponse(
+							responseCode = "404", 
+							description = "Booking not found"
+							)
+					}
+			)
+	public Response updateBooking(@PathParam("id") int id, Booking booking){
+		if(bookings.get(id)!=null){
+			bookings.put(id, booking);
+			return Response.ok().build();	
+		}
+		else{
+			return Response.status(Status.NOT_FOUND).build();	
+		}		
 	}
 	
 	@DELETE
 	@Path("{id}")
-	@ApiOperation(value="Delete a booking with ID")
-	@ApiResponses({
-		@ApiResponse(code = 200, message= "Booking deleted"),
-		@ApiResponse(code = 404, message = "Booking not found")})
+	@Operation(
+			description = "Delete a booking with ID",
+			responses = {		
+					@ApiResponse(
+							responseCode = "200", 
+							description = "Booking deleted"
+							),
+					@ApiResponse(
+							responseCode = "404", 
+							description = "Booking not found"
+							)
+					}
+			)
 	@Produces("text/plain")
-	public Response deleteBooking(@PathParam("id") String id){
-		return Controller.deleteBooking(id);
+	public Response deleteBooking(@PathParam("id") int id){
+		if(bookings.get(id)!=null) {
+			bookings.remove(id);
+			return Response.ok().build();
+		}
+		else {
+			return Response.status(Status.NOT_FOUND).build();
+		}
 	}
 }
